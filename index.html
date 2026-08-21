@@ -3,76 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>rmc88 - Remote</title>
+    <title>rmc88 - Pro Remote</title>
     <style>
         :root {
-            --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; 
-            --accent: #3b82f6; --muted: #64748b; --border: #334155;
-            --btn: #334155; --touchpad: #020617;
+            --bg: #090d16; --panel: #131c2e; --text: #f1f5f9; 
+            --accent: #2563eb; --accent-glow: rgba(37, 99, 235, 0.4);
+            --muted: #64748b; --border: #1e293b; --btn: #1e293b; 
+            --touchpad: #020617; --success: #10b981; --danger: #ef4444;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overscroll-behavior: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; overscroll-behavior: none; }
         
         /* Header */
-        header { background: var(--panel); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .logo-area { display: flex; flex-direction: column; }
-        h1 { font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; }
-        .status { font-size: 0.75rem; color: #ef4444; display: flex; align-items: center; gap: 5px; margin-top: 3px; }
-        .status.connected { color: #10b981; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
-        .status.connected .dot { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+        header { background: var(--panel); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 10; }
+        .logo-area h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: 1.5px; color: #fff; }
+        .status { font-size: 0.7rem; color: var(--danger); display: flex; align-items: center; gap: 6px; margin-top: 2px; font-weight: 600; text-transform: uppercase; }
+        .status.connected { color: var(--success); }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--danger); transition: 0.3s; }
+        .status.connected .dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
         
-        .header-btns { display: flex; gap: 10px; }
-        .icon-btn { background: var(--btn); border: none; color: white; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
-        .icon-btn:active { transform: scale(0.95); opacity: 0.8; }
-        .icon-btn svg { width: 20px; height: 20px; fill: currentColor; }
-        .icon-btn.active { background: var(--accent); }
+        .header-btns { display: flex; gap: 8px; }
+        .icon-btn { background: var(--btn); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .icon-btn:active { transform: scale(0.92); }
+        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .icon-btn.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 
-        /* Main Layout */
-        main { flex: 1; display: flex; flex-direction: column; padding: 15px; gap: 15px; position: relative; }
-        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        /* Main Container */
+        main { flex: 1; display: flex; flex-direction: column; padding: 12px; gap: 10px; overflow: hidden; max-width: 600px; width: 100%; margin: 0 auto; }
+        
+        /* Cards & Panels */
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
         
         /* Settings Modal */
         #settings-panel { display: none; }
-        #settings-panel.show { display: flex; }
-        .input-group { display: flex; gap: 10px; }
-        .input-box { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; font-weight: bold; }
-        input { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 12px; border-radius: 10px; font-size: 0.9rem; width: 100%; outline: none; }
-        input:focus { border-color: var(--accent); }
-        .btn-connect { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; margin-top: auto; cursor: pointer; transition: 0.2s;}
-        .btn-connect:active { transform: scale(0.97); }
-
-        /* Touchpad */
-        .touch-container { flex: 1; display: flex; flex-direction: column; min-height: 250px; }
-        .touchpad { flex: 1; background: var(--touchpad); border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; touch-action: none; position: relative; }
-        .touchpad span { color: rgba(255,255,255,0.1); font-weight: bold; pointer-events: none; user-select: none;}
-        .mouse-btns { display: flex; gap: 10px; margin-top: 10px; }
-        .mouse-btn { flex: 1; background: var(--btn); color: var(--text); border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .mouse-btn:active { background: #475569; }
+        #settings-panel.show { display: flex; animation: fadeIn 0.2s ease; }
+        .input-row { display: flex; gap: 8px; align-items: flex-end; }
+        .input-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        input { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 0.85rem; outline: none; transition: 0.2s; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+        .btn-action { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; height: 41px; transition: 0.2s; }
+        .btn-action:active { transform: scale(0.96); }
 
         /* Keyboard Panel */
-        #keyboard-panel { display: none; transition: 0.3s; }
+        #keyboard-panel { display: none; animation: fadeIn 0.2s ease; }
         #keyboard-panel.show { display: flex; }
-        .keys-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+        .keys-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .keys-grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .key-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; }
-        .key-btn:active { background: #475569; transform: scale(0.95); }
-        .key-btn.blue { color: #60a5fa; }
+        .key-btn { background: var(--btn); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.1s; }
+        .key-btn:active { background: var(--accent); transform: scale(0.95); }
+        .key-btn.blue { color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
+
+        /* Touchpad Area (Expandable & Perfect Fit) */
+        .touchpad-card { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 10px; }
+        .touchpad { flex: 1; background: var(--touchpad); border: 2px dashed var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; touch-action: none; position: relative; overflow: hidden; }
+        .touchpad span { color: var(--muted); font-weight: 600; font-size: 0.85rem; pointer-events: none; letter-spacing: 1px; }
+        
+        /* Mouse Action Buttons (Fixed, Visible, and Professional) */
+        .mouse-actions { display: flex; gap: 8px; margin-top: 8px; }
+        .mouse-btn { flex: 1; background: var(--btn); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; transition: 0.15s; }
+        .mouse-btn:active { background: var(--accent); border-color: var(--accent); transform: scale(0.97); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-area">
-            <h1>rmc88</h1>
+            <h1>RMC88</h1>
             <div class="status" id="conn-status"><div class="dot"></div> <span id="status-text">Disconnected</span></div>
         </div>
         <div class="header-btns">
-            <button class="icon-btn" id="btn-keyboard" onclick="togglePanel('keyboard-panel', 'btn-keyboard')">
+            <button class="icon-btn" id="btn-keyboard" onclick="togglePanel('keyboard-panel', 'btn-keyboard')" title="Keyboard">
                 <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
             </button>
-            <button class="icon-btn" id="btn-settings" onclick="togglePanel('settings-panel', 'btn-settings')">
+            <button class="icon-btn" id="btn-settings" onclick="togglePanel('settings-panel', 'btn-settings')" title="Settings">
                 <svg viewBox="0 0 24 24"><path d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm2 10.5l-3-3v-4h2v3.2l2.4 2.4-1.4 1.4z"/></svg>
             </button>
         </div>
@@ -80,22 +86,22 @@
 
     <main>
         <!-- Settings Panel -->
-        <div class="panel" id="settings-panel">
-            <div class="input-group">
-                <div class="input-box">
+        <div class="card" id="settings-panel">
+            <div class="input-row">
+                <div class="input-group">
                     <label>Server IP</label>
                     <input type="text" id="ip-input" placeholder="192.168.X.X">
                 </div>
-                <div class="input-box" style="flex: 0.4;">
+                <div class="input-group" style="flex: 0.4;">
                     <label>Port</label>
                     <input type="text" id="port-input" value="5555">
                 </div>
-                <button class="btn-connect" onclick="connect()">Connect</button>
+                <button class="btn-action" onclick="connect()">Connect</button>
             </div>
         </div>
 
         <!-- Keyboard Panel -->
-        <div class="panel" id="keyboard-panel">
+        <div class="card" id="keyboard-panel">
             <input type="text" id="kb-input" placeholder="Tap to type..." oninput="handleType(event)" onkeydown="checkEnter(event)">
             <div class="keys-grid">
                 <button class="key-btn" onclick="sendKey('enter')">Enter</button>
@@ -111,13 +117,19 @@
         </div>
 
         <!-- Touchpad Panel -->
-        <div class="panel touch-container">
+        <div class="card touchpad-card">
             <div class="touchpad" id="touchpad">
-                <span>Touch & Drag</span>
+                <span>TOUCHPAD AREA</span>
             </div>
-            <div class="mouse-btns">
-                <button class="mouse-btn" onclick="mouseClick('left')">Left Click</button>
-                <button class="mouse-btn" onclick="mouseClick('right')">Right Click</button>
+            <div class="mouse-actions">
+                <button class="mouse-btn" onclick="mouseClick('left')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8V8h8v12z"/></svg>
+                    Left Click
+                </button>
+                <button class="mouse-btn" onclick="mouseClick('right')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18V8h8a8 8 0 0 1-8 12z"/></svg>
+                    Right Click
+                </button>
             </div>
         </div>
     </main>
@@ -146,7 +158,7 @@
         function connect() {
             let ip = document.getElementById('ip-input').value.trim();
             let port = document.getElementById('port-input').value.trim();
-            if(!ip) return alert("Enter IP Address!");
+            if(!ip) return alert("Please enter Server IP!");
             
             serverUrl = `http://${ip}:${port}`;
             localStorage.setItem('rmc_url', serverUrl);
@@ -162,7 +174,7 @@
             const statusBox = document.getElementById('conn-status');
             const statusTxt = document.getElementById('status-text');
             try {
-                let res = await fetch(`${serverUrl}/ping`);
+                let res = await fetch(`${serverUrl}/ping`, {signal: AbortSignal.timeout(2000)});
                 if(res.ok) {
                     statusBox.classList.add('connected');
                     statusTxt.innerText = 'Connected';
@@ -179,10 +191,10 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action, ...data })
-            }).catch(()=>{}); // Ignore errors to prevent UI freezing
+            }).catch(()=>{});
         }
 
-        // --- Touchpad Logic with Anti-Lag (Throttling) ---
+        // --- Optimized Touchpad Logic ---
         const pad = document.getElementById('touchpad');
         let isTouching = false;
         let lastX = 0, lastY = 0;
@@ -203,34 +215,49 @@
             let curX = e.touches[0].clientX;
             let curY = e.touches[0].clientY;
             
-            dxAcc += (curX - lastX) * 1.8; // Sensitivity
-            dyAcc += (curY - lastY) * 1.8;
+            dxAcc += (curX - lastX) * 1.5; // Smooth sensitivity
+            dyAcc += (curY - lastY) * 1.5;
             
-            lastX = curX; lastY = curY;
+            lastX = curX; 
+            lastY = curY;
 
-            // Throttling: Send max ~30 times per second to fix lag
             let now = Date.now();
-            if(now - lastSendTime > 30) {
+            if(now - lastSendTime > 25) { // Ultra smooth throttling
                 sendCommand('mouse_move', { dx: dxAcc, dy: dyAcc });
-                dxAcc = 0; dyAcc = 0;
+                dxAcc = 0; 
+                dyAcc = 0;
                 lastSendTime = now;
             }
         }, {passive: false});
 
-        pad.addEventListener('touchend', e => { e.preventDefault(); isTouching = false; });
-        function mouseClick(btn) { sendCommand('mouse_click', { button: btn }); }
+        pad.addEventListener('touchend', e => { 
+            e.preventDefault(); 
+            isTouching = false; 
+        }, {passive: false});
+
+        function mouseClick(btn) { 
+            sendCommand('mouse_click', { button: btn }); 
+        }
 
         // --- Keyboard Logic ---
         let lastLen = 0;
         function handleType(e) {
             let val = e.target.value;
-            if(val.length > lastLen) sendCommand('type_text', { text: val.slice(lastLen) });
-            else if(val.length < lastLen) sendCommand('key_press', { key: 'backspace' });
+            if(val.length > lastLen) {
+                sendCommand('type_text', { text: val.slice(lastLen) });
+            } else if(val.length < lastLen) {
+                sendCommand('key_press', { key: 'backspace' });
+            }
             lastLen = val.length;
-            if(val.length > 10) { e.target.value = ''; lastLen = 0; }
+            if(val.length > 15) { e.target.value = ''; lastLen = 0; }
         }
         function checkEnter(e) {
-            if(e.key === 'Enter') { sendCommand('key_press', {key:'enter'}); e.target.value=''; lastLen=0; e.preventDefault();}
+            if(e.key === 'Enter') { 
+                sendCommand('key_press', {key:'enter'}); 
+                e.target.value=''; 
+                lastLen=0; 
+                e.preventDefault();
+            }
         }
         function sendKey(k) { sendCommand('key_press', { key: k }); }
         function sendHot(keys) { sendCommand('hotkey', { keys: keys }); }
