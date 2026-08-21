@@ -3,61 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMC88 - Pro Remote</title>
+    <title>RMC88 - Burgundy Pro</title>
     <style>
-        /* --- Themes Definition --- */
-        :root.theme-dark {
-            --bg: #090d16; --panel: #131c2e; --text: #f1f5f9; 
-            --accent: #2563eb; --accent-glow: rgba(37, 99, 235, 0.4);
-            --muted: #64748b; --border: #1e293b; --btn: #1e293b; 
-            --touchpad: #020617; --success: #10b981; --danger: #ef4444;
-        }
-        :root.theme-oled {
-            --bg: #000000; --panel: #0a0a0a; --text: #ffffff; 
-            --accent: #7c3aed; --accent-glow: rgba(124, 58, 237, 0.4);
-            --muted: #737373; --border: #262626; --btn: #171717; 
-            --touchpad: #050505; --success: #22c55e; --danger: #ef4444;
-        }
-        :root.theme-cyber {
-            --bg: #050b14; --panel: #0a192f; --text: #64ffda; 
-            --accent: #64ffda; --accent-glow: rgba(100, 255, 218, 0.3);
-            --muted: #8892b0; --border: #112240; --btn: #112240; 
-            --touchpad: #020c1b; --success: #64ffda; --danger: #ff5555;
-        }
-        :root.theme-light {
-            --bg: #f8fafc; --panel: #ffffff; --text: #0f172a; 
-            --accent: #0284c7; --accent-glow: rgba(2, 132, 199, 0.3);
-            --muted: #94a3b8; --border: #e2e8f0; --btn: #f1f5f9; 
-            --touchpad: #ffffff; --success: #10b981; --danger: #ef4444;
+        :root {
+            /* Aesthetic Burgundy Palette */
+            --bg: #1a0f14;
+            --panel: #2b1620;
+            --panel-card: #3a1f2c;
+            --text: #f3e8ee;
+            --muted: #b897a6;
+            --accent: #8b2649;
+            --accent-hover: #a82e58;
+            --accent-glow: rgba(139, 38, 73, 0.4);
+            --border: #4a2837;
+            --touchpad-bg: #12090d;
+            --success: #2ecc71;
+            --danger: #e74c3c;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; overscroll-behavior: none; transition: background 0.3s, color 0.3s; }
-        
+        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; overscroll-behavior: none; }
+
         /* Header */
-        header { background: var(--panel); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 10; }
-        .logo-area h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: 1.5px; }
+        header { background: var(--panel); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 10; }
+        .logo-area h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; color: #fff; }
         .status { font-size: 0.65rem; color: var(--danger); display: flex; align-items: center; gap: 6px; margin-top: 2px; font-weight: 700; text-transform: uppercase; }
         .status.connected { color: var(--success); }
         .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--danger); transition: 0.3s; }
         .status.connected .dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        
+
         .header-btns { display: flex; gap: 8px; }
-        .icon-btn { background: var(--btn); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .icon-btn { background: var(--panel-card); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
         .icon-btn:active { transform: scale(0.92); }
         .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
-        .icon-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 12px var(--accent-glow); }
+        .icon-btn.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
 
         /* Main Container */
-        main { flex: 1; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow: hidden; max-width: 600px; width: 100%; margin: 0 auto; }
+        main { flex: 1; display: flex; flex-direction: column; padding: 10px; gap: 10px; overflow: hidden; max-width: 500px; width: 100%; margin: 0 auto; justify-content: space-between; }
+
+        /* Cards & Panels */
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
         
-        /* Cards */
-        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        
-        /* Settings & Themes Panel */
         .panel-hidden { display: none !important; }
         .panel-show { display: flex !important; animation: fadeIn 0.2s ease; }
-        
+
+        /* Settings Row */
         .input-row { display: flex; gap: 8px; align-items: flex-end; }
         .input-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
         label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
@@ -65,35 +55,31 @@
         input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
         
         .btn-action { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; height: 41px; transition: 0.2s; }
-        .btn-action:active { transform: scale(0.96); }
-
-        /* Themes Grid */
-        .themes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
-        .theme-option { background: var(--btn); border: 1px solid var(--border); padding: 8px; border-radius: 8px; text-align: center; font-size: 0.7rem; font-weight: 700; color: var(--text); cursor: pointer; }
-        .theme-option.active-theme { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+        .btn-action:active { background: var(--accent-hover); transform: scale(0.96); }
 
         /* Keyboard Panel */
         .keys-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .keys-grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .key-btn { background: var(--btn); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.1s; }
+        .key-btn { background: var(--panel-card); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.1s; }
         .key-btn:active { background: var(--accent); color: white; transform: scale(0.95); }
-        .key-btn.blue { color: var(--accent); border-color: var(--accent-glow); }
+        .key-btn.burgundy { color: #f48fb1; border-color: rgba(244, 143, 177, 0.3); }
 
         /* Touchpad Area */
-        .touchpad-card { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 10px; }
-        .touchpad { flex: 1; background: var(--touchpad); border: 2px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; touch-action: none; position: relative; overflow: hidden; user-select: none; }
-        .touchpad span { color: var(--muted); font-weight: 600; font-size: 0.8rem; pointer-events: none; letter-spacing: 1px; }
-        .touchpad sub { color: var(--muted); font-size: 0.55rem; margin-top: 4px; opacity: 0.7; }
-        
-        /* Mouse Action Buttons */
-        .mouse-actions { display: flex; gap: 8px; margin-top: 8px; }
-        .mouse-btn { flex: 1; background: var(--btn); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; transition: 0.15s; }
+        .touchpad-card { flex: 1; display: flex; flex-direction: column; min-height: 220px; }
+        .touchpad { flex: 1; background: var(--touchpad-bg); border: 2px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; touch-action: none; position: relative; overflow: hidden; user-select: none; }
+        .touchpad span { color: var(--muted); font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; pointer-events: none; }
+        .touchpad sub { color: var(--muted); font-size: 0.6rem; margin-top: 4px; opacity: 0.6; pointer-events: none; }
+
+        /* Fixed Mouse Click Buttons */
+        .mouse-actions { display: flex; gap: 10px; margin-top: 4px; }
+        .mouse-btn { flex: 1; background: var(--panel-card); border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.15s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .mouse-btn:active { background: var(--accent); border-color: var(--accent); color: white; transform: scale(0.97); }
+        .mouse-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="theme-dark">
+<body>
 
     <header>
         <div class="logo-area">
@@ -124,15 +110,6 @@
                 </div>
                 <button class="btn-action" onclick="connect()">Connect</button>
             </div>
-            <div class="input-group" style="margin-top: 4px;">
-                <label>App Theme</label>
-                <div class="themes-grid">
-                    <div class="theme-option" onclick="setTheme('theme-dark')">Dark</div>
-                    <div class="theme-option" onclick="setTheme('theme-oled')">OLED</div>
-                    <div class="theme-option" onclick="setTheme('theme-cyber')">Cyber</div>
-                    <div class="theme-option" onclick="setTheme('theme-light')">Light</div>
-                </div>
-            </div>
         </div>
 
         <!-- Keyboard Panel -->
@@ -145,25 +122,25 @@
                 <button class="key-btn" onclick="sendKey('escape')">Esc</button>
             </div>
             <div class="keys-grid keys-grid-3">
-                <button class="key-btn blue" onclick="sendHot(['ctrl','c'])">Ctrl+C</button>
-                <button class="key-btn blue" onclick="sendHot(['ctrl','v'])">Ctrl+V</button>
-                <button class="key-btn blue" onclick="sendHot(['alt','tab'])">Alt+Tab</button>
+                <button class="key-btn burgundy" onclick="sendHot(['ctrl','c'])">Ctrl+C</button>
+                <button class="key-btn burgundy" onclick="sendHot(['ctrl','v'])">Ctrl+V</button>
+                <button class="key-btn burgundy" onclick="sendHot(['alt','tab'])">Alt+Tab</button>
             </div>
         </div>
 
-        <!-- Touchpad Panel -->
+        <!-- Touchpad & Mouse Action Buttons -->
         <div class="card touchpad-card">
             <div class="touchpad" id="touchpad">
                 <span>TOUCHPAD AREA</span>
-                <sub>Tap to Left-Click</sub>
+                <sub>Move & Tap</sub>
             </div>
             <div class="mouse-actions">
                 <button class="mouse-btn" onclick="mouseClick('left')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8V8h8v12z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8V8h8v12z"/></svg>
                     Left Click
                 </button>
                 <button class="mouse-btn" onclick="mouseClick('right')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18V8h8a8 8 0 0 1-8 12z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18V8h8a8 8 0 0 1-8 12z"/></svg>
                     Right Click
                 </button>
             </div>
@@ -174,10 +151,6 @@
         let serverUrl = localStorage.getItem('rmc_url') || '';
         let savedIp = localStorage.getItem('rmc_ip') || '';
         let savedPort = localStorage.getItem('rmc_port') || '5555';
-        
-        // Theme Manager
-        let currentTheme = localStorage.getItem('rmc_theme') || 'theme-dark';
-        setTheme(currentTheme, false);
 
         window.onload = () => {
             document.getElementById('ip-input').value = savedIp;
@@ -190,32 +163,17 @@
             }
         };
 
-        function setTheme(themeName, save = true) {
-            document.body.className = themeName;
-            currentTheme = themeName;
-            if(save) localStorage.setItem('rmc_theme', themeName);
-            
-            document.querySelectorAll('.theme-option').forEach(el => {
-                el.classList.remove('active-theme');
-                if(el.innerText.toLowerCase().includes(themeName.replace('theme-', ''))) {
-                    el.classList.add('active-theme');
-                }
-            });
-        }
-
         function togglePanel(panelId) {
             const panel = document.getElementById(panelId);
             const isShown = panel.classList.contains('panel-show');
             
-            // Close all panels
             document.querySelectorAll('.card').forEach(c => {
-                if(c.id !== 'touchpad' && !c.classList.contains('touchpad-card')) {
+                if(!c.classList.contains('touchpad-card')) {
                     c.classList.remove('panel-show');
                 }
             });
             document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
 
-            // Toggle target panel if it wasn't open
             if(!isShown) {
                 panel.classList.add('panel-show');
                 if(panelId === 'keyboard-panel') document.getElementById('btn-keyboard').classList.add('active');
@@ -262,7 +220,7 @@
             }).catch(()=>{});
         }
 
-        // --- Improved Touchpad Logic with Tap-to-Click ---
+        // Touchpad Logic
         const pad = document.getElementById('touchpad');
         let isTouching = false;
         let lastX = 0, lastY = 0;
@@ -289,8 +247,8 @@
             let curX = e.touches[0].clientX;
             let curY = e.touches[0].clientY;
             
-            let deltaX = (curX - lastX) * 1.6; // Sensitivity factor
-            let deltaY = (curY - lastY) * 1.6;
+            let deltaX = (curX - lastX) * 1.5;
+            let deltaY = (curY - lastY) * 1.5;
             
             dxAcc += deltaX;
             dyAcc += deltaY;
@@ -300,7 +258,7 @@
             lastY = curY;
 
             let now = Date.now();
-            if(now - lastSendTime > 20) { // High smoothness interval
+            if(now - lastSendTime > 20) {
                 sendCommand('mouse_move', { dx: Math.round(dxAcc), dy: Math.round(dyAcc) });
                 dxAcc = 0; 
                 dyAcc = 0;
@@ -312,21 +270,18 @@
             e.preventDefault(); 
             if(isTouching) {
                 isTouching = false;
-                // Tap-to-click detection (fast tap with minimal movement)
-                let touchDuration = Date.now() - touchStartTime;
-                if(touchDuration < 200 && totalMoveDist < 10) {
+                if((Date.now() - touchStartTime) < 200 && totalMoveDist < 10) {
                     mouseClick('left');
-                    if (navigator.vibrate) navigator.vibrate(30);
                 }
             }
         }, {passive: false});
 
         function mouseClick(btn) { 
             sendCommand('mouse_click', { button: btn }); 
-            if (navigator.vibrate) navigator.vibrate(40);
+            if(navigator.vibrate) navigator.vibrate(35);
         }
 
-        // --- Keyboard Logic ---
+        // Keyboard Logic
         let lastLen = 0;
         function handleType(e) {
             let val = e.target.value;
