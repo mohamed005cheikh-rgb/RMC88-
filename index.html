@@ -1,262 +1,303 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0f">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>rmc88 - Remote Control</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Theme Variables */
+        :root[data-theme="dark"] {
+            --bg-main: #0f172a;
+            --bg-panel: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --btn-bg: #334155;
+            --btn-hover: #475569;
+            --touchpad-bg: #020617;
+        }
+        
+        :root[data-theme="light"] {
+            --bg-main: #f1f5f9;
+            --bg-panel: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #2563eb;
+            --btn-bg: #f8fafc;
+            --btn-hover: #e2e8f0;
+            --touchpad-bg: #f8fafc;
+        }
+
+        :root[data-theme="neon"] {
+            --bg-main: #09090b;
+            --bg-panel: #18181b;
+            --border-color: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #8b5cf6;
+            --btn-bg: #27272a;
+            --btn-hover: #3f3f46;
+            --touchpad-bg: #000000;
+        }
+
+        /* Custom Utility Classes for Dynamic Theming */
+        body { background-color: var(--bg-main); color: var(--text-main); transition: background-color 0.3s, color 0.3s; overscroll-behavior-y: none; }
+        .panel { background-color: var(--bg-panel); border-color: var(--border-color); border-width: 1px; }
+        .border-custom { border-color: var(--border-color); }
+        .text-muted { color: var(--text-muted); }
+        
+        .btn-accent { background-color: var(--accent); color: white; border: none; }
+        .btn-accent:active { opacity: 0.8; transform: scale(0.97); }
+        
+        .btn-secondary { background-color: var(--btn-bg); color: var(--text-main); border-color: var(--border-color); border-width: 1px; }
+        .btn-secondary:active { background-color: var(--btn-hover); transform: scale(0.97); }
+        
+        .touchpad-area { background-color: var(--touchpad-bg); border-color: var(--border-color); border-width: 1px; touch-action: none; }
+        .input-custom { background-color: var(--bg-main); color: var(--text-main); border-color: var(--border-color); border-width: 1px; }
+        .input-custom:focus { border-color: var(--accent); outline: none; }
+    </style>
 </head>
-<body>
-    <!-- Animated Background -->
-    <div class="background">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="grid-overlay"></div>
-    </div>
+<body class="min-h-screen flex flex-col font-sans">
 
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header glass">
-            <div class="logo-container">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="M2 17l10 5 10-5"/>
-                        <path d="M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <div class="logo-text">
-                    <h1>rmc88</h1>
-                    <span class="version">v2.0</span>
-                </div>
-            </div>
-            
-            <div class="connection-status" id="connectionStatus">
-                <span class="status-dot"></span>
-                <span class="status-text">Disconnected</span>
-            </div>
-            
-            <button class="settings-btn" id="settingsBtn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                </svg>
+    <header class="panel border-b p-4 flex justify-between items-center shadow-sm z-10 relative">
+        <div class="flex flex-col">
+            <h1 class="font-extrabold text-2xl tracking-wider">rmc88</h1>
+            <span id="connection-status" class="text-xs text-red-500 flex items-center gap-1.5 font-semibold mt-0.5">
+                <span id="status-dot" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> 
+                <span id="status-text">Disconnected</span>
+            </span>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="toggleTheme()" class="btn-secondary w-10 h-10 rounded-xl transition flex items-center justify-center">
+                <i class="fa-solid fa-palette text-sm"></i>
             </button>
-        </header>
+            <button onclick="toggleConnectionPanel()" class="btn-secondary w-10 h-10 rounded-xl transition flex items-center justify-center">
+                <i class="fa-solid fa-wifi text-sm"></i>
+            </button>
+        </div>
+    </header>
 
-        <!-- Settings Modal -->
-        <div class="modal glass" id="settingsModal">
-            <div class="modal-content">
-                <h2>Connection Settings</h2>
-                <div class="input-group">
-                    <label for="serverIp">Server IP Address</label>
-                    <input type="text" id="serverIp" placeholder="192.168.1.100" autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label for="serverPort">Port</label>
-                    <input type="number" id="serverPort" value="5555">
-                </div>
-                <div class="input-group">
-                    <label for="sensitivity">Mouse Sensitivity</label>
-                    <input type="range" id="sensitivity" min="0.5" max="3" step="0.1" value="1.5">
-                    <span id="sensitivityValue">1.5x</span>
-                </div>
-                <button class="btn-primary" id="connectBtn">Connect</button>
-                <button class="btn-secondary" id="testConnectionBtn">Test Connection</button>
-                <button class="btn-secondary" id="closeSettings">Close</button>
+    <main class="max-w-md w-full mx-auto p-4 flex-1 flex flex-col gap-4">
+
+        <div id="connection-panel" class="panel p-4 rounded-2xl shadow-xl transition-all">
+            <label class="block text-xs font-semibold text-muted mb-2 uppercase tracking-wide">Server IP Address</label>
+            <div class="flex gap-2">
+                <input type="text" id="server-ip" placeholder="192.168.1.X:5555" class="input-custom flex-1 rounded-xl px-4 py-2.5 text-sm transition">
+                <button onclick="connectServer()" class="btn-accent px-5 rounded-xl text-sm font-semibold transition shadow-md">Connect</button>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Touchpad Section -->
-            <div class="touchpad-section">
-                <div class="touchpad glass" id="touchpad">
-                    <div class="touchpad-hint">Touch to move cursor</div>
-                    
-                    <!-- Touchpad buttons overlay -->
-                    <div class="touchpad-buttons">
-                        <button class="touch-btn left-btn" id="leftClickBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="5" y="7" width="14" height="10" rx="2"/>
-                            </svg>
-                        </button>
-                        <button class="touch-btn right-btn" id="rightClickBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="5" y="7" width="14" height="10" rx="2"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Quick Actions -->
-                <div class="quick-actions">
-                    <button class="action-btn glass" id="scrollUpBtn" title="Scroll Up">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 19V5M5 12l7-7 7 7"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn glass" id="scrollDownBtn" title="Scroll Down">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 5v14M19 12l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn glass" id="keyboardToggleBtn" title="Toggle Keyboard">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="6" width="20" height="12" rx="2"/>
-                            <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M8 14h8"/>
-                        </svg>
-                    </button>
-                    <button class="action-btn glass emergency-btn" id="releaseAllBtn" title="Release All Keys">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-                
-                <!-- Shortcut Buttons -->
-                <div class="shortcuts-row">
-                    <button class="shortcut-btn glass" data-hotkey="ctrl+c">
-                        <span class="shortcut-icon">📋</span>
-                        <span class="shortcut-text">Copy</span>
-                    </button>
-                    <button class="shortcut-btn glass" data-hotkey="ctrl+v">
-                        <span class="shortcut-icon">📄</span>
-                        <span class="shortcut-text">Paste</span>
-                    </button>
-                    <button class="shortcut-btn glass" data-hotkey="ctrl+x">
-                        <span class="shortcut-icon">✂️</span>
-                        <span class="shortcut-text">Cut</span>
-                    </button>
-                    <button class="shortcut-btn glass" data-hotkey="alt+tab">
-                        <span class="shortcut-icon">🔄</span>
-                        <span class="shortcut-text">Switch</span>
-                    </button>
-                    <button class="shortcut-btn glass" data-hotkey="ctrl+z">
-                        <span class="shortcut-icon">↩️</span>
-                        <span class="shortcut-text">Undo</span>
-                    </button>
-                    <button class="shortcut-btn glass" data-hotkey="ctrl+a">
-                        <span class="shortcut-icon">✅</span>
-                        <span class="shortcut-text">Select All</span>
-                    </button>
-                </div>
+        <div class="panel rounded-2xl p-4 flex flex-col gap-3 shadow-xl flex-1 min-h-[300px]">
+            <div class="text-xs font-bold uppercase tracking-wider flex justify-between items-center text-muted">
+                <span><i class="fa-solid fa-hand-pointer mr-1"></i> Touchpad</span>
+                <span class="btn-secondary px-2 py-0.5 rounded-md text-[10px] pointer-events-none">SWIPE TO MOVE</span>
             </div>
-
-            <!-- Keyboard Section -->
-            <div class="keyboard-section glass" id="keyboardSection">
-                <!-- Function Keys Row -->
-                <div class="keyboard-row">
-                    <button class="key function-key" data-key="escape">ESC</button>
-                    <button class="key function-key" data-key="f1">F1</button>
-                    <button class="key function-key" data-key="f2">F2</button>
-                    <button class="key function-key" data-key="f3">F3</button>
-                    <button class="key function-key" data-key="f4">F4</button>
-                    <button class="key function-key" data-key="f5">F5</button>
-                    <button class="key function-key" data-key="f6">F6</button>
-                    <button class="key function-key" data-key="f7">F7</button>
-                    <button class="key function-key" data-key="f8">F8</button>
-                    <button class="key function-key" data-key="f9">F9</button>
-                    <button class="key function-key" data-key="f10">F10</button>
-                    <button class="key function-key" data-key="f11">F11</button>
-                    <button class="key function-key" data-key="f12">F12</button>
-                </div>
-                
-                <!-- Number Row -->
-                <div class="keyboard-row">
-                    <button class="key wide-key" data-key="`">`</button>
-                    <button class="key" data-key="1">1</button>
-                    <button class="key" data-key="2">2</button>
-                    <button class="key" data-key="3">3</button>
-                    <button class="key" data-key="4">4</button>
-                    <button class="key" data-key="5">5</button>
-                    <button class="key" data-key="6">6</button>
-                    <button class="key" data-key="7">7</button>
-                    <button class="key" data-key="8">8</button>
-                    <button class="key" data-key="9">9</button>
-                    <button class="key" data-key="0">0</button>
-                    <button class="key" data-key="-">-</button>
-                    <button class="key" data-key="=">=</button>
-                    <button class="key wide-key" data-key="backspace">⌫</button>
-                </div>
-                
-                <!-- QWERTY Row 1 -->
-                <div class="keyboard-row">
-                    <button class="key extra-wide-key" data-key="tab">TAB</button>
-                    <button class="key" data-key="q">Q</button>
-                    <button class="key" data-key="w">W</button>
-                    <button class="key" data-key="e">E</button>
-                    <button class="key" data-key="r">R</button>
-                    <button class="key" data-key="t">T</button>
-                    <button class="key" data-key="y">Y</button>
-                    <button class="key" data-key="u">U</button>
-                    <button class="key" data-key="i">I</button>
-                    <button class="key" data-key="o">O</button>
-                    <button class="key" data-key="p">P</button>
-                    <button class="key" data-key="[">[</button>
-                    <button class="key" data-key="]">]</button>
-                    <button class="key extra-wide-key" data-key="\">\</button>
-                </div>
-                
-                <!-- QWERTY Row 2 -->
-                <div class="keyboard-row">
-                    <button class="key extra-wide-key" data-key="capslock">CAPS</button>
-                    <button class="key" data-key="a">A</button>
-                    <button class="key" data-key="s">S</button>
-                    <button class="key" data-key="d">D</button>
-                    <button class="key" data-key="f">F</button>
-                    <button class="key" data-key="g">G</button>
-                    <button class="key" data-key="h">H</button>
-                    <button class="key" data-key="j">J</button>
-                    <button class="key" data-key="k">K</button>
-                    <button class="key" data-key="l">L</button>
-                    <button class="key" data-key=";">;</button>
-                    <button class="key" data-key="'">'</button>
-                    <button class="key extra-wide-key" data-key="enter">ENTER</button>
-                </div>
-                
-                <!-- QWERTY Row 3 -->
-                <div class="keyboard-row">
-                    <button class="key ultra-wide-key" data-key="shift">SHIFT</button>
-                    <button class="key" data-key="z">Z</button>
-                    <button class="key" data-key="x">X</button>
-                    <button class="key" data-key="c">C</button>
-                    <button class="key" data-key="v">V</button>
-                    <button class="key" data-key="b">B</button>
-                    <button class="key" data-key="n">N</button>
-                    <button class="key" data-key="m">M</button>
-                    <button class="key" data-key=",">,</button>
-                    <button class="key" data-key=".">.</button>
-                    <button class="key" data-key="/">/</button>
-                    <button class="key ultra-wide-key" data-key="shift">SHIFT</button>
-                </div>
-                
-                <!-- Bottom Row -->
-                <div class="keyboard-row">
-                    <button class="key space-key" data-key="ctrl">CTRL</button>
-                    <button class="key space-key" data-key="win">WIN</button>
-                    <button class="key space-key" data-key="alt">ALT</button>
-                    <button class="key space-bar" data-key="space">SPACE</button>
-                    <button class="key space-key" data-key="alt">ALT</button>
-                    <button class="key space-key" data-key="ctrl">CTRL</button>
-                    <button class="key space-key" data-key="left">←</button>
-                    <button class="key space-key" data-key="up">↑</button>
-                    <button class="key space-key" data-key="down">↓</button>
-                    <button class="key space-key" data-key="right">→</button>
-                </div>
+            
+            <div id="touchpad" class="touchpad-area flex-1 rounded-xl flex items-center justify-center text-sm select-none transition relative overflow-hidden shadow-inner">
+                <span class="opacity-20 font-medium tracking-wide pointer-events-none">Touch & Drag Area</span>
             </div>
-        </main>
+            
+            <div class="grid grid-cols-2 gap-3 mt-1">
+                <button onclick="mouseClick('left')" class="btn-secondary py-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-computer-mouse"></i> Left Click
+                </button>
+                <button onclick="mouseClick('right')" class="btn-secondary py-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+                    Right Click <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
 
-        <!-- Footer -->
-        <footer class="footer glass">
-            <p>Copyright © 2026 mohamed005cheikh@gmail.com | by mc88</p>
-        </footer>
-    </div>
+        <div class="panel rounded-2xl p-4 flex flex-col gap-3 shadow-xl">
+            <div class="text-xs font-bold uppercase tracking-wider flex justify-between items-center text-muted">
+                <span><i class="fa-solid fa-keyboard mr-1"></i> Smart Keyboard</span>
+            </div>
+            
+            <div class="relative">
+                <input type="text" id="phone-keyboard-input" placeholder="Tap here to open phone keyboard..." 
+                    class="input-custom w-full rounded-xl px-4 py-3 text-sm transition shadow-inner"
+                    oninput="handleTyping(event)" onkeydown="handleSpecialKeys(event)">
+            </div>
+            
+            <div class="grid grid-cols-4 gap-2 pt-1">
+                <button onclick="sendKey('enter')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Enter</button>
+                <button onclick="sendKey('backspace')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Bksp</button>
+                <button onclick="sendKey('space')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Space</button>
+                <button onclick="sendKey('escape')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Esc</button>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="sendHotkey(['ctrl', 'c'])" class="btn-secondary py-2.5 rounded-lg text-xs font-bold transition text-blue-500">Ctrl + C</button>
+                <button onclick="sendHotkey(['ctrl', 'v'])" class="btn-secondary py-2.5 rounded-lg text-xs font-bold transition text-blue-500">Ctrl + V</button>
+                <button onclick="sendHotkey(['alt', 'tab'])" class="btn-secondary py-2.5 rounded-lg text-xs font-bold transition text-blue-500">Alt + Tab</button>
+            </div>
+        </div>
 
-    <script src="app.js"></script>
+    </main>
+
+    <footer class="panel border-t py-5 px-4 text-center text-xs text-muted mt-auto">
+        <p class="font-bold mb-1 tracking-wide">rmc88 Remote Control System</p>
+        <p>Copyright &copy; mohamed005cheikh@gmail.com | by mc88</p>
+    </footer>
+
+    <script>
+        // === Theme System ===
+        const themes = ['dark', 'light', 'neon'];
+        let currentThemeIndex = 0;
+
+        function applySavedTheme() {
+            const saved = localStorage.getItem('rmc88_theme');
+            if(saved && themes.includes(saved)) {
+                currentThemeIndex = themes.indexOf(saved);
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        }
+        
+        function toggleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('rmc88_theme', newTheme);
+        }
+
+        // === Connection & Logic ===
+        let serverUrl = localStorage.getItem('rmc88_server_ip') || '';
+
+        window.onload = function() {
+            applySavedTheme();
+            const panel = document.getElementById('connection-panel');
+            
+            if (serverUrl) {
+                document.getElementById('server-ip').value = serverUrl;
+                panel.classList.add('hidden'); // Hide panel to save space if IP exists
+                testConnection();
+            }
+        };
+
+        function toggleConnectionPanel() {
+            const panel = document.getElementById('connection-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        function connectServer() {
+            let ip = document.getElementById('server-ip').value.trim();
+            if (!ip.startsWith('http://') && !ip.startsWith('https://')) {
+                ip = 'http://' + ip;
+            }
+            serverUrl = ip;
+            localStorage.setItem('rmc88_server_ip', serverUrl);
+            
+            // Hide panel automatically after connecting
+            document.getElementById('connection-panel').classList.add('hidden');
+            testConnection();
+        }
+
+        async function testConnection() {
+            if (!serverUrl) return;
+            const statusText = document.getElementById('status-text');
+            const statusDot = document.getElementById('status-dot');
+            const statusContainer = document.getElementById('connection-status');
+            
+            try {
+                let res = await fetch(`${serverUrl}/ping`, { method: 'GET', mode: 'cors' });
+                if (res.ok) {
+                    statusText.innerText = 'Connected';
+                    statusContainer.className = 'text-xs text-emerald-500 flex items-center gap-1.5 font-semibold mt-0.5';
+                    statusDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]';
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                statusText.innerText = 'Disconnected';
+                statusContainer.className = 'text-xs text-red-500 flex items-center gap-1.5 font-semibold mt-0.5';
+                statusDot.className = 'w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]';
+            }
+        }
+
+        async function sendCommand(action, data = {}) {
+            if (!serverUrl) {
+                alert('Please open the Wi-Fi panel at the top and connect to your Server IP first!');
+                toggleConnectionPanel();
+                return;
+            }
+            try {
+                await fetch(`${serverUrl}/command`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action, ...data }),
+                    mode: 'cors'
+                });
+            } catch (err) {
+                console.error("Command failed", err);
+            }
+        }
+
+        // === Touchpad Movement ===
+        function mouseClick(button) { sendCommand('mouse_click', { button: button }); }
+
+        const touchpad = document.getElementById('touchpad');
+        let isTouching = false;
+        let lastX = 0, lastY = 0;
+
+        touchpad.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isTouching = true;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+        }, { passive: false });
+
+        touchpad.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isTouching) return;
+            let currentX = e.touches[0].clientX;
+            let currentY = e.touches[0].clientY;
+            // Sensitivity multiplier = 1.8
+            let dx = (currentX - lastX) * 1.8;
+            let dy = (currentY - lastY) * 1.8;
+            lastX = currentX;
+            lastY = currentY;
+            sendCommand('mouse_move', { dx: dx, dy: dy });
+        }, { passive: false });
+
+        touchpad.addEventListener('touchend', (e) => { 
+            e.preventDefault();
+            isTouching = false; 
+        });
+
+        // === Phone Keyboard Logic ===
+        let lastLength = 0;
+        function handleTyping(e) {
+            let val = e.target.value;
+            if (val.length > lastLength) {
+                let newChars = val.slice(lastLength);
+                sendCommand('type_text', { text: newChars });
+            } else if (val.length < lastLength) {
+                sendCommand('key_press', { key: 'backspace' });
+            }
+            lastLength = val.length;
+            
+            // Periodically clear input to prevent lag
+            if (val.length > 15) {
+                e.target.value = '';
+                lastLength = 0;
+            }
+        }
+
+        function handleSpecialKeys(e) {
+            if (e.key === 'Enter') {
+                sendCommand('key_press', { key: 'enter' });
+                e.target.value = '';
+                lastLength = 0;
+                e.preventDefault();
+            }
+        }
+
+        function sendKey(key) { sendCommand('key_press', { key: key }); }
+        function sendHotkey(keys) { sendCommand('hotkey', { keys: keys }); }
+    </script>
 </body>
 </html>
+
