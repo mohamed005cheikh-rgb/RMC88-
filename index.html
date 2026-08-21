@@ -54,14 +54,14 @@
         .key-btn:active { background: var(--accent); transform: scale(0.95); }
         .key-btn.blue { color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
 
-        /* Touchpad Area (Expandable & Perfect Fit) */
+        /* Touchpad Area */
         .touchpad-card { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 10px; }
         .touchpad { flex: 1; background: var(--touchpad); border: 2px dashed var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; touch-action: none; position: relative; overflow: hidden; }
         .touchpad span { color: var(--muted); font-weight: 600; font-size: 0.85rem; pointer-events: none; letter-spacing: 1px; }
         
-        /* Mouse Action Buttons (Fixed, Visible, and Professional) */
+        /* Mouse Action Buttons (Left / Right Click) */
         .mouse-actions { display: flex; gap: 8px; margin-top: 8px; }
-        .mouse-btn { flex: 1; background: var(--btn); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; transition: 0.15s; }
+        .mouse-btn { flex: 1; background: var(--btn); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.15s; }
         .mouse-btn:active { background: var(--accent); border-color: var(--accent); transform: scale(0.97); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
@@ -85,7 +85,6 @@
     </header>
 
     <main>
-        <!-- Settings Panel -->
         <div class="card" id="settings-panel">
             <div class="input-row">
                 <div class="input-group">
@@ -100,7 +99,6 @@
             </div>
         </div>
 
-        <!-- Keyboard Panel -->
         <div class="card" id="keyboard-panel">
             <input type="text" id="kb-input" placeholder="Tap to type..." oninput="handleType(event)" onkeydown="checkEnter(event)">
             <div class="keys-grid">
@@ -116,18 +114,17 @@
             </div>
         </div>
 
-        <!-- Touchpad Panel -->
         <div class="card touchpad-card">
             <div class="touchpad" id="touchpad">
                 <span>TOUCHPAD AREA</span>
             </div>
             <div class="mouse-actions">
                 <button class="mouse-btn" onclick="mouseClick('left')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8V8h8v12z"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8V8h8v12z"/></svg>
                     Left Click
                 </button>
                 <button class="mouse-btn" onclick="mouseClick('right')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18V8h8a8 8 0 0 1-8 12z"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18V8h8a8 8 0 0 1-8 12z"/></svg>
                     Right Click
                 </button>
             </div>
@@ -194,7 +191,7 @@
             }).catch(()=>{});
         }
 
-        // --- Optimized Touchpad Logic ---
+        // --- Touchpad Logic ---
         const pad = document.getElementById('touchpad');
         let isTouching = false;
         let lastX = 0, lastY = 0;
@@ -215,14 +212,14 @@
             let curX = e.touches[0].clientX;
             let curY = e.touches[0].clientY;
             
-            dxAcc += (curX - lastX) * 1.5; // Smooth sensitivity
+            dxAcc += (curX - lastX) * 1.5;
             dyAcc += (curY - lastY) * 1.5;
             
             lastX = curX; 
             lastY = curY;
 
             let now = Date.now();
-            if(now - lastSendTime > 25) { // Ultra smooth throttling
+            if(now - lastSendTime > 25) {
                 sendCommand('mouse_move', { dx: dxAcc, dy: dyAcc });
                 dxAcc = 0; 
                 dyAcc = 0;
