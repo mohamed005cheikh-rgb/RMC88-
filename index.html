@@ -1,302 +1,239 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-theme="dark">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>rmc88 - Remote Control</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>rmc88 - Remote</title>
     <style>
-        /* Theme Variables */
-        :root[data-theme="dark"] {
-            --bg-main: #0f172a;
-            --bg-panel: #1e293b;
-            --border-color: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #3b82f6;
-            --btn-bg: #334155;
-            --btn-hover: #475569;
-            --touchpad-bg: #020617;
+        :root {
+            --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; 
+            --accent: #3b82f6; --muted: #64748b; --border: #334155;
+            --btn: #334155; --touchpad: #020617;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overscroll-behavior: none; }
         
-        :root[data-theme="light"] {
-            --bg-main: #f1f5f9;
-            --bg-panel: #ffffff;
-            --border-color: #e2e8f0;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent: #2563eb;
-            --btn-bg: #f8fafc;
-            --btn-hover: #e2e8f0;
-            --touchpad-bg: #f8fafc;
-        }
+        /* Header */
+        header { background: var(--panel); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .logo-area { display: flex; flex-direction: column; }
+        h1 { font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; }
+        .status { font-size: 0.75rem; color: #ef4444; display: flex; align-items: center; gap: 5px; margin-top: 3px; }
+        .status.connected { color: #10b981; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+        .status.connected .dot { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+        
+        .header-btns { display: flex; gap: 10px; }
+        .icon-btn { background: var(--btn); border: none; color: white; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .icon-btn:active { transform: scale(0.95); opacity: 0.8; }
+        .icon-btn svg { width: 20px; height: 20px; fill: currentColor; }
+        .icon-btn.active { background: var(--accent); }
 
-        :root[data-theme="neon"] {
-            --bg-main: #09090b;
-            --bg-panel: #18181b;
-            --border-color: #27272a;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --accent: #8b5cf6;
-            --btn-bg: #27272a;
-            --btn-hover: #3f3f46;
-            --touchpad-bg: #000000;
-        }
+        /* Main Layout */
+        main { flex: 1; display: flex; flex-direction: column; padding: 15px; gap: 15px; position: relative; }
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        
+        /* Settings Modal */
+        #settings-panel { display: none; }
+        #settings-panel.show { display: flex; }
+        .input-group { display: flex; gap: 10px; }
+        .input-box { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; font-weight: bold; }
+        input { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 12px; border-radius: 10px; font-size: 0.9rem; width: 100%; outline: none; }
+        input:focus { border-color: var(--accent); }
+        .btn-connect { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; margin-top: auto; cursor: pointer; transition: 0.2s;}
+        .btn-connect:active { transform: scale(0.97); }
 
-        /* Custom Utility Classes for Dynamic Theming */
-        body { background-color: var(--bg-main); color: var(--text-main); transition: background-color 0.3s, color 0.3s; overscroll-behavior-y: none; }
-        .panel { background-color: var(--bg-panel); border-color: var(--border-color); border-width: 1px; }
-        .border-custom { border-color: var(--border-color); }
-        .text-muted { color: var(--text-muted); }
-        
-        .btn-accent { background-color: var(--accent); color: white; border: none; }
-        .btn-accent:active { opacity: 0.8; transform: scale(0.97); }
-        
-        .btn-secondary { background-color: var(--btn-bg); color: var(--text-main); border-color: var(--border-color); border-width: 1px; }
-        .btn-secondary:active { background-color: var(--btn-hover); transform: scale(0.97); }
-        
-        .touchpad-area { background-color: var(--touchpad-bg); border-color: var(--border-color); border-width: 1px; touch-action: none; }
-        .input-custom { background-color: var(--bg-main); color: var(--text-main); border-color: var(--border-color); border-width: 1px; }
-        .input-custom:focus { border-color: var(--accent); outline: none; }
+        /* Touchpad */
+        .touch-container { flex: 1; display: flex; flex-direction: column; min-height: 250px; }
+        .touchpad { flex: 1; background: var(--touchpad); border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; touch-action: none; position: relative; }
+        .touchpad span { color: rgba(255,255,255,0.1); font-weight: bold; pointer-events: none; user-select: none;}
+        .mouse-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .mouse-btn { flex: 1; background: var(--btn); color: var(--text); border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .mouse-btn:active { background: #475569; }
+
+        /* Keyboard Panel */
+        #keyboard-panel { display: none; transition: 0.3s; }
+        #keyboard-panel.show { display: flex; }
+        .keys-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+        .keys-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .key-btn { background: var(--btn); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; }
+        .key-btn:active { background: #475569; transform: scale(0.95); }
+        .key-btn.blue { color: #60a5fa; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans">
+<body>
 
-    <header class="panel border-b p-4 flex justify-between items-center shadow-sm z-10 relative">
-        <div class="flex flex-col">
-            <h1 class="font-extrabold text-2xl tracking-wider">rmc88</h1>
-            <span id="connection-status" class="text-xs text-red-500 flex items-center gap-1.5 font-semibold mt-0.5">
-                <span id="status-dot" class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> 
-                <span id="status-text">Disconnected</span>
-            </span>
+    <header>
+        <div class="logo-area">
+            <h1>rmc88</h1>
+            <div class="status" id="conn-status"><div class="dot"></div> <span id="status-text">Disconnected</span></div>
         </div>
-        <div class="flex gap-2">
-            <button onclick="toggleTheme()" class="btn-secondary w-10 h-10 rounded-xl transition flex items-center justify-center">
-                <i class="fa-solid fa-palette text-sm"></i>
+        <div class="header-btns">
+            <button class="icon-btn" id="btn-keyboard" onclick="togglePanel('keyboard-panel', 'btn-keyboard')">
+                <svg viewBox="0 0 24 24"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/></svg>
             </button>
-            <button onclick="toggleConnectionPanel()" class="btn-secondary w-10 h-10 rounded-xl transition flex items-center justify-center">
-                <i class="fa-solid fa-wifi text-sm"></i>
+            <button class="icon-btn" id="btn-settings" onclick="togglePanel('settings-panel', 'btn-settings')">
+                <svg viewBox="0 0 24 24"><path d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm2 10.5l-3-3v-4h2v3.2l2.4 2.4-1.4 1.4z"/></svg>
             </button>
         </div>
     </header>
 
-    <main class="max-w-md w-full mx-auto p-4 flex-1 flex flex-col gap-4">
-
-        <div id="connection-panel" class="panel p-4 rounded-2xl shadow-xl transition-all">
-            <label class="block text-xs font-semibold text-muted mb-2 uppercase tracking-wide">Server IP Address</label>
-            <div class="flex gap-2">
-                <input type="text" id="server-ip" placeholder="192.168.1.X:5555" class="input-custom flex-1 rounded-xl px-4 py-2.5 text-sm transition">
-                <button onclick="connectServer()" class="btn-accent px-5 rounded-xl text-sm font-semibold transition shadow-md">Connect</button>
+    <main>
+        <!-- Settings Panel -->
+        <div class="panel" id="settings-panel">
+            <div class="input-group">
+                <div class="input-box">
+                    <label>Server IP</label>
+                    <input type="text" id="ip-input" placeholder="192.168.X.X">
+                </div>
+                <div class="input-box" style="flex: 0.4;">
+                    <label>Port</label>
+                    <input type="text" id="port-input" value="5555">
+                </div>
+                <button class="btn-connect" onclick="connect()">Connect</button>
             </div>
         </div>
 
-        <div class="panel rounded-2xl p-4 flex flex-col gap-3 shadow-xl flex-1 min-h-[300px]">
-            <div class="text-xs font-bold uppercase tracking-wider flex justify-between items-center text-muted">
-                <span><i class="fa-solid fa-hand-pointer mr-1"></i> Touchpad</span>
-                <span class="btn-secondary px-2 py-0.5 rounded-md text-[10px] pointer-events-none">SWIPE TO MOVE</span>
+        <!-- Keyboard Panel -->
+        <div class="panel" id="keyboard-panel">
+            <input type="text" id="kb-input" placeholder="Tap to type..." oninput="handleType(event)" onkeydown="checkEnter(event)">
+            <div class="keys-grid">
+                <button class="key-btn" onclick="sendKey('enter')">Enter</button>
+                <button class="key-btn" onclick="sendKey('backspace')">Bksp</button>
+                <button class="key-btn" onclick="sendKey('space')">Space</button>
+                <button class="key-btn" onclick="sendKey('escape')">Esc</button>
             </div>
-            
-            <div id="touchpad" class="touchpad-area flex-1 rounded-xl flex items-center justify-center text-sm select-none transition relative overflow-hidden shadow-inner">
-                <span class="opacity-20 font-medium tracking-wide pointer-events-none">Touch & Drag Area</span>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3 mt-1">
-                <button onclick="mouseClick('left')" class="btn-secondary py-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-computer-mouse"></i> Left Click
-                </button>
-                <button onclick="mouseClick('right')" class="btn-secondary py-4 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
-                    Right Click <i class="fa-solid fa-bars"></i>
-                </button>
+            <div class="keys-grid keys-grid-3">
+                <button class="key-btn blue" onclick="sendHot(['ctrl','c'])">Ctrl+C</button>
+                <button class="key-btn blue" onclick="sendHot(['ctrl','v'])">Ctrl+V</button>
+                <button class="key-btn blue" onclick="sendHot(['alt','tab'])">Alt+Tab</button>
             </div>
         </div>
 
-        <div class="panel rounded-2xl p-4 flex flex-col gap-3 shadow-xl">
-            <div class="text-xs font-bold uppercase tracking-wider flex justify-between items-center text-muted">
-                <span><i class="fa-solid fa-keyboard mr-1"></i> Smart Keyboard</span>
+        <!-- Touchpad Panel -->
+        <div class="panel touch-container">
+            <div class="touchpad" id="touchpad">
+                <span>Touch & Drag</span>
             </div>
-            
-            <div class="relative">
-                <input type="text" id="phone-keyboard-input" placeholder="Tap here to open phone keyboard..." 
-                    class="input-custom w-full rounded-xl px-4 py-3 text-sm transition shadow-inner"
-                    oninput="handleTyping(event)" onkeydown="handleSpecialKeys(event)">
-            </div>
-            
-            <div class="grid grid-cols-4 gap-2 pt-1">
-                <button onclick="sendKey('enter')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Enter</button>
-                <button onclick="sendKey('backspace')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Bksp</button>
-                <button onclick="sendKey('space')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Space</button>
-                <button onclick="sendKey('escape')" class="btn-secondary py-3 rounded-lg text-xs font-bold transition">Esc</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-                <button onclick="sendHotkey(['ctrl', 'c'])" class="btn-secondary py-2.5 rounded-lg text-xs font-bold transition text-blue-500">Ctrl + C</button>
-                <button onclick="sendHotkey(['ctrl', 'v'])" class="btn-secondary py-2.5 rounded-lg text-xs font-bold transition text-blue-500">Ctrl + V</button>
-                <button onclick="sendHotkey(['alt', 'tab'])" class="btn-secondary py-2.5 rounded-lg text-xs font-bold transition text-blue-500">Alt + Tab</button>
+            <div class="mouse-btns">
+                <button class="mouse-btn" onclick="mouseClick('left')">Left Click</button>
+                <button class="mouse-btn" onclick="mouseClick('right')">Right Click</button>
             </div>
         </div>
-
     </main>
 
-    <footer class="panel border-t py-5 px-4 text-center text-xs text-muted mt-auto">
-        <p class="font-bold mb-1 tracking-wide">rmc88 Remote Control System</p>
-        <p>Copyright &copy; mohamed005cheikh@gmail.com | by mc88</p>
-    </footer>
-
     <script>
-        // === Theme System ===
-        const themes = ['dark', 'light', 'neon'];
-        let currentThemeIndex = 0;
+        let serverUrl = localStorage.getItem('rmc_url') || '';
+        let savedIp = localStorage.getItem('rmc_ip') || '';
+        let savedPort = localStorage.getItem('rmc_port') || '5555';
 
-        function applySavedTheme() {
-            const saved = localStorage.getItem('rmc88_theme');
-            if(saved && themes.includes(saved)) {
-                currentThemeIndex = themes.indexOf(saved);
-                document.documentElement.setAttribute('data-theme', saved);
-            }
-        }
-        
-        function toggleTheme() {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            const newTheme = themes[currentThemeIndex];
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('rmc88_theme', newTheme);
-        }
-
-        // === Connection & Logic ===
-        let serverUrl = localStorage.getItem('rmc88_server_ip') || '';
-
-        window.onload = function() {
-            applySavedTheme();
-            const panel = document.getElementById('connection-panel');
-            
-            if (serverUrl) {
-                document.getElementById('server-ip').value = serverUrl;
-                panel.classList.add('hidden'); // Hide panel to save space if IP exists
-                testConnection();
+        window.onload = () => {
+            document.getElementById('ip-input').value = savedIp;
+            document.getElementById('port-input').value = savedPort;
+            if(!serverUrl) {
+                document.getElementById('settings-panel').classList.add('show');
+                document.getElementById('btn-settings').classList.add('active');
+            } else {
+                checkPing();
             }
         };
 
-        function toggleConnectionPanel() {
-            const panel = document.getElementById('connection-panel');
-            panel.classList.toggle('hidden');
+        function togglePanel(panelId, btnId) {
+            document.getElementById(panelId).classList.toggle('show');
+            document.getElementById(btnId).classList.toggle('active');
         }
 
-        function connectServer() {
-            let ip = document.getElementById('server-ip').value.trim();
-            if (!ip.startsWith('http://') && !ip.startsWith('https://')) {
-                ip = 'http://' + ip;
-            }
-            serverUrl = ip;
-            localStorage.setItem('rmc88_server_ip', serverUrl);
+        function connect() {
+            let ip = document.getElementById('ip-input').value.trim();
+            let port = document.getElementById('port-input').value.trim();
+            if(!ip) return alert("Enter IP Address!");
             
-            // Hide panel automatically after connecting
-            document.getElementById('connection-panel').classList.add('hidden');
-            testConnection();
+            serverUrl = `http://${ip}:${port}`;
+            localStorage.setItem('rmc_url', serverUrl);
+            localStorage.setItem('rmc_ip', ip);
+            localStorage.setItem('rmc_port', port);
+            
+            togglePanel('settings-panel', 'btn-settings');
+            checkPing();
         }
 
-        async function testConnection() {
-            if (!serverUrl) return;
-            const statusText = document.getElementById('status-text');
-            const statusDot = document.getElementById('status-dot');
-            const statusContainer = document.getElementById('connection-status');
-            
+        async function checkPing() {
+            if(!serverUrl) return;
+            const statusBox = document.getElementById('conn-status');
+            const statusTxt = document.getElementById('status-text');
             try {
-                let res = await fetch(`${serverUrl}/ping`, { method: 'GET', mode: 'cors' });
-                if (res.ok) {
-                    statusText.innerText = 'Connected';
-                    statusContainer.className = 'text-xs text-emerald-500 flex items-center gap-1.5 font-semibold mt-0.5';
-                    statusDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]';
-                } else {
-                    throw new Error();
+                let res = await fetch(`${serverUrl}/ping`);
+                if(res.ok) {
+                    statusBox.classList.add('connected');
+                    statusTxt.innerText = 'Connected';
                 }
-            } catch (e) {
-                statusText.innerText = 'Disconnected';
-                statusContainer.className = 'text-xs text-red-500 flex items-center gap-1.5 font-semibold mt-0.5';
-                statusDot.className = 'w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]';
+            } catch(e) {
+                statusBox.classList.remove('connected');
+                statusTxt.innerText = 'Disconnected';
             }
         }
 
         async function sendCommand(action, data = {}) {
-            if (!serverUrl) {
-                alert('Please open the Wi-Fi panel at the top and connect to your Server IP first!');
-                toggleConnectionPanel();
-                return;
-            }
-            try {
-                await fetch(`${serverUrl}/command`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, ...data }),
-                    mode: 'cors'
-                });
-            } catch (err) {
-                console.error("Command failed", err);
-            }
+            if(!serverUrl) return;
+            fetch(`${serverUrl}/command`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, ...data })
+            }).catch(()=>{}); // Ignore errors to prevent UI freezing
         }
 
-        // === Touchpad Movement ===
-        function mouseClick(button) { sendCommand('mouse_click', { button: button }); }
-
-        const touchpad = document.getElementById('touchpad');
+        // --- Touchpad Logic with Anti-Lag (Throttling) ---
+        const pad = document.getElementById('touchpad');
         let isTouching = false;
         let lastX = 0, lastY = 0;
+        let dxAcc = 0, dyAcc = 0;
+        let lastSendTime = 0;
 
-        touchpad.addEventListener('touchstart', (e) => {
+        pad.addEventListener('touchstart', e => {
             e.preventDefault();
             isTouching = true;
             lastX = e.touches[0].clientX;
             lastY = e.touches[0].clientY;
-        }, { passive: false });
+        }, {passive: false});
 
-        touchpad.addEventListener('touchmove', (e) => {
+        pad.addEventListener('touchmove', e => {
             e.preventDefault();
-            if (!isTouching) return;
-            let currentX = e.touches[0].clientX;
-            let currentY = e.touches[0].clientY;
-            // Sensitivity multiplier = 1.8
-            let dx = (currentX - lastX) * 1.8;
-            let dy = (currentY - lastY) * 1.8;
-            lastX = currentX;
-            lastY = currentY;
-            sendCommand('mouse_move', { dx: dx, dy: dy });
-        }, { passive: false });
-
-        touchpad.addEventListener('touchend', (e) => { 
-            e.preventDefault();
-            isTouching = false; 
-        });
-
-        // === Phone Keyboard Logic ===
-        let lastLength = 0;
-        function handleTyping(e) {
-            let val = e.target.value;
-            if (val.length > lastLength) {
-                let newChars = val.slice(lastLength);
-                sendCommand('type_text', { text: newChars });
-            } else if (val.length < lastLength) {
-                sendCommand('key_press', { key: 'backspace' });
-            }
-            lastLength = val.length;
+            if(!isTouching) return;
             
-            // Periodically clear input to prevent lag
-            if (val.length > 15) {
-                e.target.value = '';
-                lastLength = 0;
-            }
-        }
+            let curX = e.touches[0].clientX;
+            let curY = e.touches[0].clientY;
+            
+            dxAcc += (curX - lastX) * 1.8; // Sensitivity
+            dyAcc += (curY - lastY) * 1.8;
+            
+            lastX = curX; lastY = curY;
 
-        function handleSpecialKeys(e) {
-            if (e.key === 'Enter') {
-                sendCommand('key_press', { key: 'enter' });
-                e.target.value = '';
-                lastLength = 0;
-                e.preventDefault();
+            // Throttling: Send max ~30 times per second to fix lag
+            let now = Date.now();
+            if(now - lastSendTime > 30) {
+                sendCommand('mouse_move', { dx: dxAcc, dy: dyAcc });
+                dxAcc = 0; dyAcc = 0;
+                lastSendTime = now;
             }
-        }
+        }, {passive: false});
 
-        function sendKey(key) { sendCommand('key_press', { key: key }); }
-        function sendHotkey(keys) { sendCommand('hotkey', { keys: keys }); }
+        pad.addEventListener('touchend', e => { e.preventDefault(); isTouching = false; });
+        function mouseClick(btn) { sendCommand('mouse_click', { button: btn }); }
+
+        // --- Keyboard Logic ---
+        let lastLen = 0;
+        function handleType(e) {
+            let val = e.target.value;
+            if(val.length > lastLen) sendCommand('type_text', { text: val.slice(lastLen) });
+            else if(val.length < lastLen) sendCommand('key_press', { key: 'backspace' });
+            lastLen = val.length;
+            if(val.length > 10) { e.target.value = ''; lastLen = 0; }
+        }
+        function checkEnter(e) {
+            if(e.key === 'Enter') { sendCommand('key_press', {key:'enter'}); e.target.value=''; lastLen=0; e.preventDefault();}
+        }
+        function sendKey(k) { sendCommand('key_press', { key: k }); }
+        function sendHot(keys) { sendCommand('hotkey', { keys: keys }); }
     </script>
 </body>
 </html>
