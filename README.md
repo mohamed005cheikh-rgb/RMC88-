@@ -32,7 +32,6 @@ Remarque : Une connexion Internet n'est nécessaire que pour cette seule command
 
    ```
    python server.py
-```
  * Une fenêtre noire apparaîtra affichant un lien réseau local (par exemple, http://192.168.x.x:5555) et un code QR.
 Étape 5 : Connecter votre téléphone
  * Activez le point d'accès mobile (Hotspot) sur votre PC, ou connectez votre PC et votre téléphone au même réseau Wi-Fi.
