@@ -23,7 +23,8 @@ Make sure you have the following two files in the **same folder** on your comput
 Open your Command Prompt (`cmd`) or PowerShell, navigate to the folder where your files are saved, and run the following command to install the required libraries:
 
 ```bash
-pip install flask flask-cors pyautogui qrcode
+pip install flask flask-cors pyautogui qrcode.
+---
 Step 4: Run the Server
 Double-click server.py, or run it from your terminal:
 python server.py
@@ -43,3 +44,9 @@ Step 5: Connect Your Phone
 ​Copyright: © 2026
 ​Developer: Mohamed005cheikh@gmail.com | by MC88
 ​WhatsApp: 30726475
+
+<div align="center">
+  <br>
+  <img src="WM.png" alt="MC88 Watermark" width="100px">
+  <br>
+</div>
