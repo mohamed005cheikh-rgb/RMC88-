@@ -1,47 +1,45 @@
+# RMC88 Remote
 
-🖥️ rmc88 - Remote Control System
-> نظام تحكم عن بعد احترافي وخفيف يعتمد على شبكة محلية (Local Network / Hotspot) للتحكم بالفأرة ولوحة المفاتيح عبر هاتفك الذكي دون الحاجة للإنترنت.
-> Un système de contrôle à distance léger et professionnel utilisant un réseau local pour contrôler la souris et le clavier depuis votre smartphone, sans connexion Internet.
-> 
-📋 1. متطلبات التشغيل | Prérequis
- * 💻 جهاز حاسوب يعمل بنظام Windows.
- * 📱 هاتف ذكي (Android / iPhone).
- * 🛜 شبكة محلية (نقطة اتصال Hotspot يفتحها الهاتف ويتصل بها الحاسوب، أو شبكة Wi-Fi مشتركة).
-🚀 2. خطوات التثبيت والتشغيل | Installation & Guide
-🔹 الخطوة الأولى: تثبيت لغة بايثون والمكتبات
- * تأكد من تثبيت Python على حاسوبك.
- * افتح موجه الأوامر (CMD أو Terminal) ونفّذ الأمر التالي:
-   pip install flask flask-cors pyautogui
+RMC88 Remote is a lightweight, high-performance, and 99% offline-ready web application that turns your smartphone into a wireless touchpad, keyboard, and system controller for your Windows PC.
 
-🔹 الخطوة الثانية: إنشاء اختصار لتشغيل السيرفر بنقرة واحدة
-لتجنب فتح برنامج VS Code في كل مرة، قم بإنشاء ملف تشغيل سريع:
- * انقر بزر الفأرة الأيمن في المجلد الذي يوجد به ملف server.py، واختار New ثم Text Document.
- * افتح الملف واكتب بداخله الكود التالي:
-   @echo off
-title rmc88 Server
+---
+
+## 🚀 Step-by-Step Installation Guide (For Beginners)
+
+If you have never installed Python or any development tools before, don't worry! Just follow these simple steps:
+
+### Step 1: Install Python
+1. Go to the official Python website: [python.org/downloads](https://www.python.org/downloads/)
+2. Download the latest version of Python for Windows (e.g., Python 3.x).
+3. **CRITICAL:** During the installation, make sure to check the box at the bottom that says **"Add Python to PATH"** before clicking "Install Now".
+4. Once finished, you can verify it by opening Command Prompt (`cmd`) and typing `python --version`.
+
+### Step 2: Download the Project Files
+Make sure you have the following two files in the **same folder** on your computer:
+1. `index.html` (The mobile web interface)
+2. `server.py` (The Python backend server)
+
+### Step 3: Install Required Libraries
+Open your Command Prompt (`cmd`) or PowerShell, navigate to the folder where your files are saved, and run the following command to install the required libraries:
+
+```bash
+pip install flask flask-cors pyautogui qrcode
+Step 4: Run the Server
+Double-click server.py, or run it from your terminal:
 python server.py
-pause
-
- * اضغط على File ثم Save As، وسمِّ الملف بالاسم run.bat (وتأكد من جعل نوع الملف All Files)، ثم اضغط حفظ.
- * الآن أصبح بإمكانك تشغيل السيرفر فوراً في أي وقت بالنقر المزدوج (Double Click) على ملف run.bat.
-🔹 الخطوة الثالثة: تشغيل السيرفر على الحاسوب
- * انقر نقراً مزدوجاً على ملف run.bat.
- * ستظهر لك نافذة سوداء تعرض عنوان الـ IP المحلي ورقم المنفذ 5555.
- * ⚠️ ملاحظة هامة: عند أول تشغيل، قد يظهر لك تحذير من جدار الحماية (Windows Firewall)، انقر على السماح بالوصول (Allow Access).
-🔹 الخطوة الرابعة: تشغيل واجهة التحكم على الهاتف
- * افتح واجهة التحكم عبر متصفح هاتفك (سواء من ملف index.html المخزن محلياً على هاتفك أو عبر الرابط).
- * انقر على أيقونة الإعدادات (⚙️).
- * اكتب عنوان الـ IP الخاص بالحاسوب، وتأكد أن المنفذ مضبوط على 5555.
- * اضغط على Connect. بمجرد أن يتحول مؤشر الحالة إلى اللون الأخضر (Connected)، يكون النظام جاهزاً للاستخدام الفوري!
-🛠️ 3. دليل حل المشاكل الشائعة | Troubleshooting Guide
-| المشكلة (Problem) | السبب المحتمل (Cause) | الحل المباشر (Solution) |
-|---|---|---|
-| 🔴 حالة الاتصال تظل "Disconnected" | الحاسوب والهاتف ليس على نفس الشبكة، أو أن السيرفر مغلق. | تأكد من تشغيل ملف run.bat وأن الجهازين متصلان بنفس الـ Hotspot أو الواي فاي. |
-| 🔴 خطأ في الـ Terminal عند تشغيل السيرفر | لم يتم تثبيت المكتبات المطلوبة (flask, pyautogui). | أعد تنفيذ أمر التثبيت في موجه الأوامر: 
-pip install flask flask-cors pyautogui |
-| 🔴 المتصفح يرفض الاتصال تماماً | نسيان كتابة المنفذ :5555، أو وجود حظر أمني في متصفح الهاتف. | تأكد من كتابة الـ IP والمنفذ بدقة، أو قم بإيقاف حماية المتصفح المؤقتة (مثل Brave Shields). |
-📄 4. حقوق النشر والتطوير | Copyright
-> Copyright © 2026 > 📧 Email: mohamed005cheikh@gmail.com
-> 🛠️ Designed and developed by mc88 | All rights reserved.
-> 
-
+A black window will appear showing a local network link (e.g., http://192.168.x.x:5555) and a QR code.
+Step 5: Connect Your Phone
+​Turn on the Mobile Hotspot on your PC, or connect both your PC and your phone to the same Wi-Fi network.
+​Scan the QR code displayed in your terminal using your phone's camera, or type the URL directly into your phone's browser.
+​Enjoy your 99% offline, ultra-smooth remote control!
+​🛠️ Requirements & Dependencies
+​Python 3.x
+​Libraries:
+​Flask (Web server framework)
+​Flask-CORS (Cross-origin resource sharing)
+​PyAutoGUI (Mouse and keyboard automation)
+​qrcode (Terminal QR code generation)
+​📄 Copyright & Support
+​Copyright: © 2026
+​Developer: Mohamed005cheikh@gmail.com | by MC88
+​WhatsApp: 30726475
