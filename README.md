@@ -22,7 +22,6 @@ Make sure you have the following two files in the **same folder** on your comput
 ### Step 3: Install Required Libraries
 Open your Command Prompt (`cmd`) or PowerShell, navigate to the folder where your files are saved, and run the following command to install the required libraries:
 
-```bash
 pip install flask flask-cors pyautogui qrcode.
 ---
 ###Step 4: Run the Server
