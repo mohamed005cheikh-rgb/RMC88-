@@ -1,48 +1,52 @@
+
 # RMC88 Remote
 
-RMC88 Remote is a lightweight, high-performance, and 99% offline-ready web application that turns your smartphone into a wireless touchpad, keyboard, and system controller for your Windows PC.
+RMC88 Remote est une application web légère, ultra-rapide et fonctionnant à 99% hors ligne, qui transforme votre smartphone en pavé tactile sans fil, en clavier et en contrôleur système pour votre PC Windows.
 
 ---
 
-## 🚀 Step-by-Step Installation Guide (For Beginners)
+## 🚀 Guide d'installation étape par étape (Pour débutants)
 
-If you have never installed Python or any development tools before, don't worry! Just follow these simple steps:
+Si vous n'avez jamais installé Python ou d'outils de développement auparavant, ne vous inquiétez pas ! Suivez simplement ces étapes simples :
 
-### Step 1: Install Python
-1. Go to the official Python website: [python.org/downloads](https://www.python.org/downloads/)
-2. Download the latest version of Python for Windows (e.g., Python 3.x).
-3. **CRITICAL:** During the installation, make sure to check the box at the bottom that says **"Add Python to PATH"** before clicking "Install Now".
-4. Once finished, you can verify it by opening Command Prompt (`cmd`) and typing `python --version`.
+### Étape 1 : Installer Python
+1. Rendez-vous sur le site officiel de Python : [python.org/downloads](https://www.python.org/downloads/)
+2. Téléchargez la dernière version de Python pour Windows (par exemple, Python 3.x).
+3. **TRÈS IMPORTANT :** Pendant l'installation, assurez-vous de cocher la case en bas qui indique **"Add Python to PATH"** avant de cliquer sur "Install Now".
+4. Une fois l'installation terminée, vous pouvez vérifier en ouvrant l'Invite de commandes (`cmd`) et en tapant `python --version`.
 
-### Step 2: Download the Project Files
-Make sure you have the following two files in the **same folder** on your computer:
-1. `index.html` (The mobile web interface)
-2. `server.py` (The Python backend server)
+### Étape 2 : Télécharger les fichiers du projet
+Assurez-vous d'avoir les deux fichiers suivants dans le **même dossier** sur votre ordinateur :
+1. `index.html` (L'interface web mobile)
+2. `server.py` (Le serveur backend Python)
 
-### Step 3: Install Required Libraries
-Open your Command Prompt (`cmd`) or PowerShell, navigate to the folder where your files are saved, and run the following command to install the required libraries:
+### Étape 3 : Installer les bibliothèques requises
+Ouvrez votre Invite de commandes (`cmd`) ou PowerShell, accédez au dossier où vos fichiers sont enregistrés, et exécutez la commande suivante pour installer les bibliothèques nécessaires :
 
-pip install flask flask-cors pyautogui qrcode.
----
-###Step 4: Run the Server
-Double-click server.py, or run it from your terminal:
-python server.py
-A black window will appear showing a local network link (e.g., http://192.168.x.x:5555) and a QR code.
-Step 5: Connect Your Phone
-​Turn on the Mobile Hotspot on your PC, or connect both your PC and your phone to the same Wi-Fi network.
-​Scan the QR code displayed in your terminal using your phone's camera, or type the URL directly into your phone's browser.
-​Enjoy your 99% offline, ultra-smooth remote control!
-​🛠️ Requirements & Dependencies
-​Python 3.x
-​Libraries:
-​Flask (Web server framework)
-​Flask-CORS (Cross-origin resource sharing)
-​PyAutoGUI (Mouse and keyboard automation)
-​qrcode (Terminal QR code generation)
-​📄 Copyright & Support
-​Copyright: © 2026
-​Developer: Mohamed005cheikh@gmail.com | by MC88
-​WhatsApp: 30726475
+```bash
+pip install flask flask-cors pyautogui qrcode
+
+Remarque : Une connexion Internet n'est nécessaire que pour cette seule commande afin de télécharger les bibliothèques.
+Étape 4 : Lancer le serveur
+ * Double-cliquez sur server.py, ou lancez-le depuis votre terminal :
+   python server.py
+
+ * Une fenêtre noire apparaîtra affichant un lien réseau local (par exemple, http://192.168.x.x:5555) et un code QR.
+Étape 5 : Connecter votre téléphone
+ * Activez le point d'accès mobile (Hotspot) sur votre PC, ou connectez votre PC et votre téléphone au même réseau Wi-Fi.
+ * Scannez le code QR affiché dans votre terminal à l'aide de l'appareil photo de votre téléphone, ou tapez directement l'URL dans le navigateur de votre téléphone.
+ * Profitez de votre télécommande ultra-fluide et fonctionnant hors ligne à 99% !
+🛠️ Prérequis et Dépendances
+ * Python 3.x
+ * Bibliothèques :
+   * Flask (Framework de serveur web)
+   * Flask-CORS (Partage de ressources entre origines)
+   * PyAutoGUI (Automatisation de la souris et du clavier)
+   * qrcode (Génération de code QR dans le terminal)
+📄 Copyright et Support
+ * Copyright : © 2026
+ * Développeur : Mohamed005cheikh@gmail.com | par MC88
+ * WhatsApp : 30726475
 
 <div align="center">
   <br>
