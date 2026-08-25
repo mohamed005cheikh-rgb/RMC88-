@@ -25,12 +25,14 @@ Ouvrez votre Invite de commandes (`cmd`) ou PowerShell, accédez au dossier où 
 
 ```bash
 pip install flask flask-cors pyautogui qrcode
-
+```
 Remarque : Une connexion Internet n'est nécessaire que pour cette seule commande afin de télécharger les bibliothèques.
 Étape 4 : Lancer le serveur
  * Double-cliquez sur server.py, ou lancez-le depuis votre terminal :
-   python server.py
 
+   ```
+   python server.py
+```
  * Une fenêtre noire apparaîtra affichant un lien réseau local (par exemple, http://192.168.x.x:5555) et un code QR.
 Étape 5 : Connecter votre téléphone
  * Activez le point d'accès mobile (Hotspot) sur votre PC, ou connectez votre PC et votre téléphone au même réseau Wi-Fi.
