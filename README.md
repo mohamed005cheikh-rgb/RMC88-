@@ -25,7 +25,7 @@ Open your Command Prompt (`cmd`) or PowerShell, navigate to the folder where you
 ```bash
 pip install flask flask-cors pyautogui qrcode.
 ---
-Step 4: Run the Server
+###Step 4: Run the Server
 Double-click server.py, or run it from your terminal:
 python server.py
 A black window will appear showing a local network link (e.g., http://192.168.x.x:5555) and a QR code.
